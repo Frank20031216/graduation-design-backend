@@ -37,7 +37,7 @@ public class MdmProductionOrderController extends BaseController
     /**
      * 查询生产订单列表
      */
-    @PreAuthorize("@ss.hasPermi('system:order:list')")
+    //@PreAuthorize("@ss.hasPermi('system:order:list')")
     @GetMapping("/list")
     public TableDataInfo list(MdmProductionOrder mdmProductionOrder)
     {
@@ -72,7 +72,7 @@ public class MdmProductionOrderController extends BaseController
     /**
      * 新增生产订单
      */
-    @PreAuthorize("@ss.hasPermi('system:order:add')")
+    //@PreAuthorize("@ss.hasPermi('system:order:add')")
     @Log(title = "生产订单", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody MdmProductionOrder mdmProductionOrder)
@@ -83,7 +83,7 @@ public class MdmProductionOrderController extends BaseController
     /**
      * 修改生产订单
      */
-    @PreAuthorize("@ss.hasPermi('system:order:edit')")
+    //@PreAuthorize("@ss.hasPermi('system:order:edit')")
     @Log(title = "生产订单", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody MdmProductionOrder mdmProductionOrder)
@@ -101,4 +101,5 @@ public class MdmProductionOrderController extends BaseController
     {
         return toAjax(mdmProductionOrderService.deleteMdmProductionOrderByIds(ids));
     }
+
 }

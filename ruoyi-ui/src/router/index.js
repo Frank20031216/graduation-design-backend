@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import ProductionOrder from '@/views/mdm/productionOrder/index.vue'
+
 Vue.use(Router)
 
 /* Layout */
@@ -161,17 +161,7 @@ export const dynamicRoutes = [
         meta: { title: '修改生成配置', activeMenu: '/tool/gen' }
       }
     ]
-  },
-  {
-      path: '/mdm/productionOrder', // 访问路径：http://localhost:80/mdm/productionOrder
-      component: ProductionOrder, 
-      meta: {
-        title: '生产订单管理', // 页面标题（浏览器标签显示）
-        icon: 'el-icon-menu', // 侧边栏图标（可选）
-        affix: false, // 是否固定标签（可选）
-        permission: ['mdm:productionOrder'] // 权限标识（和你组件中的v-hasPermi对应，可选）
-      }
-    }
+  }
 ]
 
 // 防止连续点击多次路由报错
