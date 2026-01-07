@@ -3,6 +3,7 @@ package com.ruoyi.mdm.service.impl;
 import java.util.List;
 
 import com.ruoyi.common.utils.DateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.mdm.mapper.ProductionOrderMapper;
@@ -51,6 +52,7 @@ public class ProductionOrderServiceImpl implements IProductionOrderService {
     @Override
     public int insertProductionOrder(ProductionOrder productionOrder) {
         productionOrder.setCreateTime(DateUtils.getNowDate());
+        productionOrder.setCreateBy(SecurityUtils.getUsername());
         return productionOrderMapper.insertProductionOrder(productionOrder);
     }
 
@@ -63,6 +65,7 @@ public class ProductionOrderServiceImpl implements IProductionOrderService {
     @Override
     public int updateProductionOrder(ProductionOrder productionOrder) {
         productionOrder.setUpdateTime(DateUtils.getNowDate());
+        productionOrder.setUpdateBy(SecurityUtils.getUsername());
         return productionOrderMapper.updateProductionOrder(productionOrder);
     }
 

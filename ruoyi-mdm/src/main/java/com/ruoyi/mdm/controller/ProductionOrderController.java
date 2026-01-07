@@ -39,7 +39,7 @@ public class ProductionOrderController extends BaseController {
     /**
      * 查询生产订单管理列表
      */
-    //@PreAuthorize("@ss.hasPermi('mdm:productionOrder:list')")
+    @PreAuthorize("@ss.hasPermi('mdm:productionOrder:list')")
     @GetMapping("/list")
     public TableDataInfo list(ProductionOrder productionOrder) {
         startPage();
@@ -83,7 +83,7 @@ public class ProductionOrderController extends BaseController {
     /**
      * 新增生产订单管理
      */
-    @PreAuthorize("@ss.hasPermi('mdm:productionOrder:add')")
+    //@PreAuthorize("@ss.hasPermi('mdm:productionOrder:add')")
     @Log(title = "生产订单管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ProductionOrder productionOrder) {
