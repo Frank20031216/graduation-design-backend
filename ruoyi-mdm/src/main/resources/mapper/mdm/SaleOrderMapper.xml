@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.mdm.mapper.SaleOrderMapper">
+    
+    <resultMap type="SaleOrder" id="SaleOrderResult">
+        <result property="id"    column="id"    />
+        <result property="orderDate"    column="order_date"    />
+        <result property="isUrgent"    column="is_urgent"    />
+        <result property="customerName"    column="customer_name"    />
+        <result property="specificationModel"    column="specification_model"    />
+        <result property="totalWeightKg"    column="total_weight_kg"    />
+        <result property="totalDeliveryDate"    column="total_delivery_date"    />
+        <result property="amount"    column="amount"    />
+        <result property="remark"    column="remark"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isScheduled"    column="is_scheduled"    />
+        <result property="productCategory"    column="product_category"    />
+    </resultMap>
+
+    <sql id="selectSaleOrderVo">
+        select id, order_date, is_urgent, customer_name, specification_model, total_weight_kg, total_delivery_date, amount, remark, create_by, create_time, update_by, update_time, is_scheduled, product_category from mdm_sale_order
+    </sql>
+
+    <select id="selectSaleOrderList" parameterType="SaleOrder" resultMap="SaleOrderResult">
+        <include refid="selectSaleOrderVo"/>
+        <where>  
+            <if test="orderDate != null "> and order_date = #{orderDate}</if>
+            <if test="isUrgent != null  and isUrgent != ''"> and is_urgent = #{isUrgent}</if>
+            <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>
+            <if test="specificationModel != null  and specificationModel != ''"> and specification_model = #{specificationModel}</if>
+            <if test="totalWeightKg != null "> and total_weight_kg = #{totalWeightKg}</if>
+            <if test="totalDeliveryDate != null "> and total_delivery_date = #{totalDeliveryDate}</if>
+            <if test="amount != null "> and amount = #{amount}</if>
+            <if test="isScheduled != null  and isScheduled != ''"> and is_scheduled = #{isScheduled}</if>
+            <if test="productCategory != null  and productCategory != ''"> and product_category = #{productCategory}</if>
+        </where>
+    </select>
+    
+    <select id="selectSaleOrderById" parameterType="Long" resultMap="SaleOrderResult">
+        <include refid="selectSaleOrderVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSaleOrder" parameterType="SaleOrder" useGeneratedKeys="true" keyProperty="id">
+        insert into mdm_sale_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="orderDate != null">order_date,</if>
+            <if test="isUrgent != null and isUrgent != ''">is_urgent,</if>
+            <if test="customerName != null and customerName != ''">customer_name,</if>
+            <if test="specificationModel != null">specification_model,</if>
+            <if test="totalWeightKg != null">total_weight_kg,</if>
+            <if test="totalDeliveryDate != null">total_delivery_date,</if>
+            <if test="amount != null">amount,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isScheduled != null and isScheduled != ''">is_scheduled,</if>
+            <if test="productCategory != null and productCategory != ''">product_category,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="orderDate != null">#{orderDate},</if>
+            <if test="isUrgent != null and isUrgent != ''">#{isUrgent},</if>
+            <if test="customerName != null and customerName != ''">#{customerName},</if>
+            <if test="specificationModel != null">#{specificationModel},</if>
+            <if test="totalWeightKg != null">#{totalWeightKg},</if>
+            <if test="totalDeliveryDate != null">#{totalDeliveryDate},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isScheduled != null and isScheduled != ''">#{isScheduled},</if>
+            <if test="productCategory != null and productCategory != ''">#{productCategory},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSaleOrder" parameterType="SaleOrder">
+        update mdm_sale_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="orderDate != null">order_date = #{orderDate},</if>
+            <if test="isUrgent != null and isUrgent != ''">is_urgent = #{isUrgent},</if>
+            <if test="customerName != null and customerName != ''">customer_name = #{customerName},</if>
+            <if test="specificationModel != null">specification_model = #{specificationModel},</if>
+            <if test="totalWeightKg != null">total_weight_kg = #{totalWeightKg},</if>
+            <if test="totalDeliveryDate != null">total_delivery_date = #{totalDeliveryDate},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isScheduled != null and isScheduled != ''">is_scheduled = #{isScheduled},</if>
+            <if test="productCategory != null and productCategory != ''">product_category = #{productCategory},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSaleOrderById" parameterType="Long">
+        delete from mdm_sale_order where id = #{id}
+    </delete>
+
+    <delete id="deleteSaleOrderByIds" parameterType="String">
+        delete from mdm_sale_order where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

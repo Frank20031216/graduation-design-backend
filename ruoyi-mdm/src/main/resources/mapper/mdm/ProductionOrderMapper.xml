@@ -6,6 +6,7 @@
 
     <resultMap type="ProductionOrder" id="ProductionOrderResult">
         <result property="id" column="id"/>
+        <result property="saleId" column="sale_id"/>
         <result property="orderDate" column="order_date"/>
         <result property="productCategory" column="product_category"/>
         <result property="customerName" column="customer_name"/>
@@ -25,6 +26,7 @@
 
     <sql id="selectProductionOrderVo">
         select id,
+               sale_id,
                order_date,
                product_category,
                customer_name,
@@ -46,7 +48,8 @@
     <select id="selectProductionOrderList" parameterType="ProductionOrder" resultMap="ProductionOrderResult">
         <include refid="selectProductionOrderVo"/>
         <where>
-            <if test="id != null ">and id like concat('%', #{id}, '%')</if>
+            <if test="saleId != null ">and sale_id = #{saleId}</if>
+            <if test="id != null ">and id = #{id}</if>
             <if test="orderDate != null ">and order_date = #{orderDate}</if>
             <if test="productCategory != null  and productCategory != ''">and product_category like concat('%',
                 #{productCategory}, '%')
@@ -77,6 +80,7 @@
     <insert id="insertProductionOrder" parameterType="ProductionOrder" useGeneratedKeys="true" keyProperty="id">
         insert into mdm_production_order
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="saleId != null">sale_id,</if>
             <if test="orderDate != null">order_date,</if>
             <if test="productCategory != null and productCategory != ''">product_category,</if>
             <if test="customerName != null and customerName != ''">customer_name,</if>
@@ -94,6 +98,7 @@
             <if test="updateTime != null">update_time,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="saleId != null">#{saleId},</if>
             <if test="orderDate != null">#{orderDate},</if>
             <if test="productCategory != null and productCategory != ''">#{productCategory},</if>
             <if test="customerName != null and customerName != ''">#{customerName},</if>

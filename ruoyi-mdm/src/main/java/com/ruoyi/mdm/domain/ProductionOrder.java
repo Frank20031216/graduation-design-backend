@@ -22,6 +22,9 @@ public class ProductionOrder extends BaseEntity
     @Excel(name = "序号")
     private Long id;
 
+    @Excel(name = "销售订单序号")
+    private Long saleId;
+
     /** 下单时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Excel(name = "下单时间", width = 30, dateFormat = "yyyy-MM-dd")
@@ -73,6 +76,15 @@ public class ProductionOrder extends BaseEntity
     public Long getId() 
     {
         return id;
+    }
+    public void setSaleId(Long saleId)
+    {
+        this.saleId = saleId;
+    }
+
+    public Long getSaleId()
+    {
+        return saleId;
     }
 
     public void setOrderDate(Date orderDate) 
@@ -179,6 +191,7 @@ public class ProductionOrder extends BaseEntity
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
             .append("id", getId())
+            .append("saleId", getSaleId())
             .append("orderDate", getOrderDate())
             .append("productCategory", getProductCategory())
             .append("customerName", getCustomerName())
