@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectSaleOrderList" parameterType="SaleOrder" resultMap="SaleOrderResult">
         <include refid="selectSaleOrderVo"/>
-        <where>  
+        <where>
             <if test="orderDate != null "> and order_date = #{orderDate}</if>
             <if test="isUrgent != null  and isUrgent != ''"> and is_urgent = #{isUrgent}</if>
             <if test="customerName != null  and customerName != ''"> and customer_name like concat('%', #{customerName}, '%')</if>

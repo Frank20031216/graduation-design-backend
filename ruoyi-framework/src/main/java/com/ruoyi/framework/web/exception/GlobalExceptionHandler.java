@@ -142,4 +142,5 @@ public class GlobalExceptionHandler
     {
         return AjaxResult.error("演示模式，不允许操作");
     }
+
 }

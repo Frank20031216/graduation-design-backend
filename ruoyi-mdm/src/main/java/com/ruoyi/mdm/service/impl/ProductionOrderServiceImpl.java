@@ -1,7 +1,10 @@
 package com.ruoyi.mdm.service.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.ruoyi.mdm.mapper.ProductionOrderMapper;
 import com.ruoyi.mdm.domain.ProductionOrder;
 import com.ruoyi.mdm.service.IProductionOrderService;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 生产订单管理Service业务层处理
@@ -99,6 +103,61 @@ public class ProductionOrderServiceImpl implements IProductionOrderService {
      */
     @Override
     public int insertProductionOrders(List<ProductionOrder> productionOrderList) {
-        return productionOrderMapper.insertProductionOrders(productionOrderList);
+        // 1. 空列表校验（基础校验）
+        if (CollectionUtils.isEmpty(productionOrderList)) {
+            throw new ServiceException("生产订单列表不能为空，请至少填写一条订单数据");
+        }
+
+        // 2. 遍历校验每个订单的业务规则（核心）
+        // 获取今天的日期（截断时分秒，仅保留年月日）
+        Date today = DateUtils.parseDate(DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, new Date()));
+        // 交期最小值：今天+2天
+        Date minDeliveryDate = DateUtils.addDays(today, 2);
+
+        for (int i = 0; i < productionOrderList.size(); i++) {
+            ProductionOrder order = productionOrderList.get(i);
+            String rowTip = "第" + (i + 1) + "行生产订单：";
+
+            // 必填项校验（交期+生产日期）
+            Date deliveryDate = order.getDeliveryDate();
+            Date productionDate = order.getProductionDate();
+
+            if (deliveryDate == null) {
+                throw new ServiceException(rowTip + "交期为必填项，请选择具体日期");
+            }
+            if (productionDate == null) {
+                throw new ServiceException(rowTip + "生产日期为必填项，请选择具体日期");
+            }
+
+            // 交期规则校验：不能早于今天+2天
+            if (deliveryDate.compareTo(minDeliveryDate) < 0) {
+                throw new ServiceException(rowTip + "交期不能早于" + DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, minDeliveryDate) + "（今天+2天）");
+            }
+
+            // 生产日期规则校验：必须在今天 ~ 交期之间
+            if (productionDate.compareTo(today) < 0) {
+                throw new ServiceException(rowTip + "生产日期不能早于今天（" + DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, today) + "）");
+            }
+            if (productionDate.compareTo(deliveryDate) > 0) {
+                throw new ServiceException(rowTip + "生产日期不能晚于交期（" + DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD, deliveryDate) + "）");
+            }
+
+            // 重量非空校验
+            BigDecimal weightKg = order.getWeightKg();
+            if (weightKg == null || weightKg.compareTo(BigDecimal.ZERO) <= 0) {
+                throw new ServiceException(rowTip + "重量必须大于0，请填写有效数值");
+            }
+        }
+
+        // 3. 所有校验通过，执行批量插入
+        int insertCount = productionOrderMapper.insertProductionOrders(productionOrderList);
+
+        // 可选：校验插入结果
+        if (insertCount != productionOrderList.size()) {
+            throw new ServiceException("批量新增生产订单失败，部分数据插入异常");
+        }
+
+        return insertCount;
     }
+
 }
