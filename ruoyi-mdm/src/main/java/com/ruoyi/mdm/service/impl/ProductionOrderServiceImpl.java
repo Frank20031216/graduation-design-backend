@@ -7,10 +7,11 @@ import java.util.List;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.mdm.domain.dto.ProductionOrderQueryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.mdm.mapper.ProductionOrderMapper;
-import com.ruoyi.mdm.domain.ProductionOrder;
+import com.ruoyi.mdm.domain.entity.ProductionOrder;
 import com.ruoyi.mdm.service.IProductionOrderService;
 import org.springframework.util.CollectionUtils;
 
@@ -43,7 +44,7 @@ public class ProductionOrderServiceImpl implements IProductionOrderService {
      * @return 生产订单管理
      */
     @Override
-    public List<ProductionOrder> selectProductionOrderList(ProductionOrder productionOrder) {
+    public List<ProductionOrder> selectProductionOrderList(ProductionOrderQueryDTO productionOrder) {
         return productionOrderMapper.selectProductionOrderList(productionOrder);
     }
 

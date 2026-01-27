@@ -1,7 +1,7 @@
 package com.ruoyi.mdm.service;
 
 import java.util.List;
-import com.ruoyi.mdm.domain.SaleOrder;
+import com.ruoyi.mdm.domain.entity.SaleOrder;
 
 /**
  * 销售订单Service接口

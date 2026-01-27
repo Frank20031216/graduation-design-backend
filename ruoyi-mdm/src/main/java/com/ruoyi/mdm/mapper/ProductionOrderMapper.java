@@ -1,7 +1,9 @@
 package com.ruoyi.mdm.mapper;
 
 import java.util.List;
-import com.ruoyi.mdm.domain.ProductionOrder;
+
+import com.ruoyi.mdm.domain.dto.ProductionOrderQueryDTO;
+import com.ruoyi.mdm.domain.entity.ProductionOrder;
 
 /**
  * 生产订单管理Mapper接口
@@ -25,7 +27,7 @@ public interface ProductionOrderMapper
      * @param productionOrder 生产订单管理
      * @return 生产订单管理集合
      */
-    public List<ProductionOrder> selectProductionOrderList(ProductionOrder productionOrder);
+    public List<ProductionOrder> selectProductionOrderList(ProductionOrderQueryDTO productionOrder);
 
     /**
      * 新增生产订单管理

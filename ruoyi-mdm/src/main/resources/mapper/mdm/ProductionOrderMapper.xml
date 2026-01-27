@@ -69,6 +69,8 @@
             <if test="remark != null  and remark != ''">and remark = #{remark}</if>
             <if test="createBy != null  and createBy != ''">and create_by like concat('%', #{createBy}, '%')</if>
             <if test="createTime != null ">and create_time = #{createTime}</if>
+            <if test="startDate != null ">and production_date &gt;= #{startDate}</if>
+            <if test="endDate != null ">and production_date &lt;= #{endDate}</if>
         </where>
     </select>
 
@@ -120,13 +122,13 @@
     <!-- 新增：批量插入 -->
     <insert id="insertProductionOrders" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
         insert into mdm_production_order (order_date, product_category, customer_name, specification_model, weight_kg,
-        delivery_date, is_priority, is_urgent, is_produced, production_date)
+        delivery_date, is_priority, is_urgent, is_produced, production_date, sale_id)
         values
         <foreach item="productionOrder" index="index" collection="list" separator=",">
             (#{productionOrder.orderDate}, #{productionOrder.productCategory}, #{productionOrder.customerName},
             #{productionOrder.specificationModel}, #{productionOrder.weightKg}, #{productionOrder.deliveryDate},
             #{productionOrder.isPriority}, #{productionOrder.isUrgent}, #{productionOrder.isProduced},
-            #{productionOrder.productionDate})
+            #{productionOrder.productionDate}, #{productionOrder.saleId})
         </foreach>
     </insert>
 

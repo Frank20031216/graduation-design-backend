@@ -5,7 +5,7 @@ import com.ruoyi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.mdm.mapper.SaleOrderMapper;
-import com.ruoyi.mdm.domain.SaleOrder;
+import com.ruoyi.mdm.domain.entity.SaleOrder;
 import com.ruoyi.mdm.service.ISaleOrderService;
 
 /**
