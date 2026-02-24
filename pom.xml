@@ -183,6 +183,7 @@
                 <version>${kaptcha.version}</version>
             </dependency>
 
+
             <!-- 定时任务-->
             <dependency>
                 <groupId>com.ruoyi</groupId>
@@ -223,6 +224,12 @@
                 <groupId>com.ruoyi</groupId>
                 <artifactId>ruoyi-mdm</artifactId>
                 <version>${ruoyi.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.flowable</groupId>
+                <artifactId>flowable-spring-boot-starter</artifactId>
+                <version>6.8.1</version>
             </dependency>
 
         </dependencies>

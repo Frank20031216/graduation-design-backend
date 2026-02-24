@@ -67,6 +67,34 @@
             <artifactId>ruoyi-mdm</artifactId>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>org.flowable</groupId>-->
+<!--            <artifactId>flowable-spring-boot-starter</artifactId>-->
+<!--            <version>6.7.2</version> &lt;!&ndash; 兼容 Spring Boot 2.5.x 的版本 &ndash;&gt;-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Flowable UI 依赖（Modeler） &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.flowable</groupId>-->
+<!--            <artifactId>flowable-spring-boot-starter-ui-modeler</artifactId>-->
+<!--            <version>6.7.2</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Flowable UI 依赖（Admin） &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.flowable</groupId>-->
+<!--            <artifactId>flowable-spring-boot-starter-ui-admin</artifactId>-->
+<!--            <version>6.7.2</version>-->
+<!--        </dependency>-->
+
+<!--        &lt;!&ndash; Flowable UI 依赖（Task） &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.flowable</groupId>-->
+<!--            <artifactId>flowable-spring-boot-starter-ui-task</artifactId>-->
+<!--            <version>6.7.2</version>-->
+<!--        </dependency>-->
+
+
     </dependencies>
 
     <build>
