@@ -1,10 +1,13 @@
 package com.ruoyi.mdm.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 //新增：引入（否则会引起MultipartFile报错，暂时不知道是不是Spring Web依赖的问题）
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.mdm.domain.dto.ProductionOrderQueryDTO;
+import org.flowable.engine.repository.ProcessDefinition;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +47,7 @@ public class ProductionOrderController extends BaseController {
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody ProductionOrderQueryDTO productionOrder) {
         startPage();
-        List<ProductionOrder> list = productionOrderService.selectProductionOrderList(productionOrder);
+        List<ProductionOrder> list = productionOrderService.selectProductionOrderList(productionOrder, productionOrder.getPageNum(), productionOrder.getPageSize());
         return getDataTable(list);
     }
 
@@ -55,7 +58,7 @@ public class ProductionOrderController extends BaseController {
     @Log(title = "生产订单管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, ProductionOrderQueryDTO productionOrder) {
-        List<ProductionOrder> list = productionOrderService.selectProductionOrderList(productionOrder);
+        List<ProductionOrder> list = productionOrderService.selectProductionOrderList(productionOrder, 1, Integer.MAX_VALUE);
         ExcelUtil<ProductionOrder> util = new ExcelUtil<ProductionOrder>(ProductionOrder.class);
         util.exportExcel(response, list, "生产订单管理数据");
     }

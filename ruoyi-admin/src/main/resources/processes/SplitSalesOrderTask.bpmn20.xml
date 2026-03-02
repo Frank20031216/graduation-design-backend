@@ -1,0 +1,32 @@
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.1">
+    <process id="splitSalesOrder" name="销售订单拆分流程" isExecutable="true">
+        <startEvent id="startEvent" name="启动拆分" flowable:formFieldValidation="true"/>
+        <serviceTask id="splitOrderTask" name="拆分为生产订单" flowable:class="com.ruoyi.flowable.task.SplitSalesOrderTask"/>
+        <endEvent id="endEvent" name="拆分完成"/>
+        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="splitOrderTask"/>
+        <sequenceFlow id="flow2" sourceRef="splitOrderTask" targetRef="endEvent"/>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_splitSalesOrder">
+        <bpmndi:BPMNPlane bpmnElement="splitSalesOrder" id="BPMNPlane_splitSalesOrder">
+            <bpmndi:BPMNShape bpmnElement="startEvent" id="BPMNShape_startEvent">
+                <omgdc:Bounds height="30.00000000000003" width="30.0" x="265.922874852857" y="126.9675262538345"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="splitOrderTask" id="BPMNShape_splitOrderTask">
+                <omgdc:Bounds height="60.0" width="100.0" x="345.922874852857" y="111.9675262538345"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
+                <omgdc:Bounds height="28.0" width="27.999999999999943" x="495.922874852857" y="126.9675262538345"/>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1" flowable:sourceDockerX="15.0" flowable:sourceDockerY="15.000000000000014" flowable:targetDockerX="50.0" flowable:targetDockerY="30.0">
+                <omgdi:waypoint x="295.87287347121236" y="141.9675262538345"/>
+                <omgdi:waypoint x="345.92287485283333" y="141.96752625383454"/>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2" flowable:sourceDockerX="50.0" flowable:sourceDockerY="30.0" flowable:targetDockerX="13.999999999999972" flowable:targetDockerY="14.0">
+                <omgdi:waypoint x="445.87287485284077" y="141.9675262538345"/>
+                <omgdi:waypoint x="457.922874852857" y="141.9675262538345"/>
+                <omgdi:waypoint x="457.922874852857" y="141.9675262538345"/>
+                <omgdi:waypoint x="495.9254069727334" y="141.23574707952469"/>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

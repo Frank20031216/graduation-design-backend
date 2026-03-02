@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
@@ -44,7 +45,10 @@ public class ProductionOrderServiceImpl implements IProductionOrderService {
      * @return 生产订单管理
      */
     @Override
-    public List<ProductionOrder> selectProductionOrderList(ProductionOrderQueryDTO productionOrder) {
+    public List<ProductionOrder> selectProductionOrderList(ProductionOrderQueryDTO productionOrder, int pageNum, int pageSize) {
+
+        PageHelper.startPage(pageNum, pageSize);
+
         return productionOrderMapper.selectProductionOrderList(productionOrder);
     }
 

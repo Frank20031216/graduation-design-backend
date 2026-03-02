@@ -26,7 +26,7 @@ public interface IProductionOrderService {
      * @param productionOrder 生产订单管理
      * @return 生产订单管理集合
      */
-    public List<ProductionOrder> selectProductionOrderList(ProductionOrderQueryDTO productionOrder);
+    public List<ProductionOrder> selectProductionOrderList(ProductionOrderQueryDTO productionOrder, int pageNum, int pageSize);
 
     /**
      * 新增生产订单管理

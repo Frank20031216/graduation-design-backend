@@ -24,7 +24,7 @@ public interface ProductionOrderMapper
     /**
      * 查询生产订单管理列表
      * 
-     * @param productionOrder 生产订单管理
+     * @param productionOrder
      * @return 生产订单管理集合
      */
     public List<ProductionOrder> selectProductionOrderList(ProductionOrderQueryDTO productionOrder);

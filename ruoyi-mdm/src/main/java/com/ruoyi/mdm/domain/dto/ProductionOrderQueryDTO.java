@@ -87,6 +87,12 @@ public class ProductionOrderQueryDTO implements Serializable {
     @Excel(name = "结束生产时间")
     private Date endDate;
 
+    private Integer pageNum = 1;
+
+    private Integer pageSize = 10;
+
+    private Integer offset;
+
     public void setId(Long id)
     {
         this.id = id;
@@ -283,5 +289,28 @@ public class ProductionOrderQueryDTO implements Serializable {
     public Date getEndDate()
     {
         return endDate;
+    }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+    }
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public Integer getPageNum() {
+        return pageNum;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
+
+     public Integer getOffset() {
+        return offset;
     }
 }
