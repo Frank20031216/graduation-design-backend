@@ -1,7 +1,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.1">
     <process id="splitSalesOrder" name="销售订单拆分流程" isExecutable="true">
         <startEvent id="startEvent" name="启动拆分" flowable:formFieldValidation="true"/>
-        <serviceTask id="splitOrderTask" name="拆分为生产订单" flowable:class="com.ruoyi.flowable.task.SplitSalesOrderTask"/>
+        <serviceTask id="splitOrderTask" name="拆分为生产订单" flowable:delegateExpression="${batchCreateProductionOrders}"/>
         <endEvent id="endEvent" name="拆分完成"/>
         <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="splitOrderTask"/>
         <sequenceFlow id="flow2" sourceRef="splitOrderTask" targetRef="endEvent"/>
