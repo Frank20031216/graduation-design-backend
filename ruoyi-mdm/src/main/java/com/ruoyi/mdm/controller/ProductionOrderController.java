@@ -108,7 +108,7 @@ public class ProductionOrderController extends BaseController {
     /**
      * 批量新增生产订单管理
      */
-    @PreAuthorize("@ss.hasPermi('mdm:productionOrder:add')")
+    //@PreAuthorize("@ss.hasPermi('mdm:productionOrder:add')")
     @Log(title = "生产订单管理", businessType = BusinessType.INSERT)
     @PostMapping("/batch")
     public AjaxResult addBatch(@RequestBody List<ProductionOrder> productionOrderList) {
