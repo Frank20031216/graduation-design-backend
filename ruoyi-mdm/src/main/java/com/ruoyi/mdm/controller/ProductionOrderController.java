@@ -1,13 +1,15 @@
 package com.ruoyi.mdm.controller;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-
-//新增：引入（否则会引起MultipartFile报错，暂时不知道是不是Spring Web依赖的问题）
-import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.mdm.domain.dto.ProductionOrderQueryDTO;
-import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
+import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.task.api.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +39,17 @@ import com.ruoyi.common.core.page.TableDataInfo;
 @RestController
 @RequestMapping("/mdm/productionOrder")
 public class ProductionOrderController extends BaseController {
+
     @Autowired
     private IProductionOrderService productionOrderService;
+
+    private final Logger log = LoggerFactory.getLogger(ProductionOrderController.class);
+
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private TaskService taskService;
 
     /**
      * 查询生产订单管理列表
@@ -97,11 +108,25 @@ public class ProductionOrderController extends BaseController {
     /**
      * 批量新增生产订单管理
      */
-    @PreAuthorize("@ss.hasPermi('mdm:productionOrder:add')")
+    //@PreAuthorize("@ss.hasPermi('mdm:productionOrder:add')")
     @Log(title = "生产订单管理", businessType = BusinessType.INSERT)
     @PostMapping("/batch")
     public AjaxResult addBatch(@RequestBody List<ProductionOrder> productionOrderList) {
-        return toAjax(productionOrderService.insertProductionOrders(productionOrderList));
+
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("productionOrderList",productionOrderList);
+        ProcessInstance processInstance =
+                        runtimeService.startProcessInstanceByKey("splitSalesOrder", map);
+        String processInstanceId = processInstance.getId();
+        log.info("{}\t流程实例ID:{}",processInstance.getProcessDefinitionName(),processInstanceId);
+//        Task task = taskService.createTaskQuery()
+//                .processInstanceId(processInstanceId)
+//                .active()
+//                .singleResult();
+//        taskService.complete(task.getId());
+
+        return success(processInstanceId);
+        //return toAjax(productionOrderService.insertProductionOrders(productionOrderList));
     }
 
     /**
