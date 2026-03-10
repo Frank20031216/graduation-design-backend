@@ -3,16 +3,16 @@
         <startEvent id="startEvent" name="启动拆分" flowable:formFieldValidation="true"/>
         <serviceTask id="splitOrderTask" name="拆分为生产订单" flowable:delegateExpression="${batchCreateProductionOrders}"/>
         <endEvent id="endEvent" name="完成"/>
-        <userTask id="sid-51CA0C20-65C7-45B2-A889-40ACC4060699" name="审核" flowable:assignee="admin" flowable:formFieldValidation="true">
+        <userTask id="splitApproval" name="审核" flowable:assignee="admin" flowable:formFieldValidation="true">
             <extensionElements>
                 <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler">
                     <![CDATA[ false ]]>
                 </modeler:initiator-can-complete>
             </extensionElements>
         </userTask>
-        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="sid-51CA0C20-65C7-45B2-A889-40ACC4060699"/>
+        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="splitApproval"/>
         <exclusiveGateway id="sid-AB967527-54B7-4D3E-BC3C-48AACC4AF214"/>
-        <sequenceFlow id="sid-110D0B5B-0863-4E05-AB8D-F261501FF1F3" sourceRef="sid-51CA0C20-65C7-45B2-A889-40ACC4060699" targetRef="sid-AB967527-54B7-4D3E-BC3C-48AACC4AF214"/>
+        <sequenceFlow id="sid-110D0B5B-0863-4E05-AB8D-F261501FF1F3" sourceRef="splitApproval" targetRef="sid-AB967527-54B7-4D3E-BC3C-48AACC4AF214"/>
         <serviceTask id="orderStatusRollback" name="销售订单状态回滚" flowable:delegateExpression="${orderStatusRollback}"/>
         <sequenceFlow id="sid-D86CB55F-54C5-4BBB-BE8C-68B518D001D7" name="不通过" sourceRef="sid-AB967527-54B7-4D3E-BC3C-48AACC4AF214" targetRef="orderStatusRollback">
             <conditionExpression xsi:type="tFormalExpression">
@@ -38,7 +38,7 @@
             <bpmndi:BPMNShape bpmnElement="endEvent" id="BPMNShape_endEvent">
                 <omgdc:Bounds height="28.0" width="28.0" x="690.0000097209763" y="127.96752805668856"/>
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="sid-51CA0C20-65C7-45B2-A889-40ACC4060699" id="BPMNShape_sid-51CA0C20-65C7-45B2-A889-40ACC4060699">
+            <bpmndi:BPMNShape bpmnElement="splitApproval" id="BPMNShape_splitApproval">
                 <omgdc:Bounds height="80.0" width="100.0" x="255.0" y="101.9675262538345"/>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="sid-AB967527-54B7-4D3E-BC3C-48AACC4AF214" id="BPMNShape_sid-AB967527-54B7-4D3E-BC3C-48AACC4AF214">

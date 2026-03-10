@@ -2,9 +2,12 @@ package com.ruoyi.mdm.controller;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.mdm.domain.dto.SaleOrderSplitApprovalDTO;
 import com.ruoyi.mdm.domain.entity.ProductionOrder;
 import com.ruoyi.mdm.domain.entity.SaleOrder;
+import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.UserTask;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
@@ -72,26 +75,59 @@ public class FlowableController extends BaseController {
 
     @GetMapping("/querySplitTasksToAudit")
     public List<SaleOrderSplitApprovalDTO> querySplitTasksToAudit() {
-        List<Task> tasks = taskService.createTaskQuery()
-                .taskAssignee("admin")
-                .list();
 
+        String processDefinitionKey = "splitSalesOrderWithAudit";
+        String taskDefinitionKey = "splitApproval";
+
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKey(processDefinitionKey)
+                .latestVersion()
+                .singleResult();
+
+        if (processDefinition == null) {
+            System.err.println("流程定义不存在：" + processDefinitionKey);
+            return null;
+        }
+
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
+
+        UserTask userTask = (UserTask) bpmnModel.getProcessById(processDefinitionKey)
+                .getFlowElement(taskDefinitionKey);
+
+        if (userTask == null) {
+            System.err.println("用户任务节点不存在：" + taskDefinitionKey);
+            return null;
+        }
+
+        // 获取静态配置的assignee
+        String staticAssignee = userTask.getAssignee();
         List<SaleOrderSplitApprovalDTO> res = new ArrayList<>();
-        tasks.stream().forEach(task -> {
-            String taskId = task.getId();
-            String processInstanceId = task.getProcessInstanceId();
-            Map<String, Object> variables;
 
-            if (processInstanceId != null && !processInstanceId.isEmpty()) {
-                variables = runtimeService.getVariables(processInstanceId);
+        if(SecurityUtils.hasRole(staticAssignee)){
+            List<Task> tasks = taskService.createTaskQuery()
+                    .taskAssignee("admin")
+                    .processDefinitionKey(processDefinitionKey)
+                    .taskDefinitionKey(taskDefinitionKey)
+                    .orderByTaskCreateTime().desc()
+                    .list();
 
-                SaleOrder saleOrder = (SaleOrder) variables.get("saleOrder");
-                List<ProductionOrder> productionOrderList = (List<ProductionOrder>) variables.get("productionOrderList");
 
-                res.add(new SaleOrderSplitApprovalDTO(taskId, saleOrder, productionOrderList));
-            }
+            tasks.stream().forEach(task -> {
+                String taskId = task.getId();
+                String processInstanceId = task.getProcessInstanceId();
+                Map<String, Object> variables;
 
-        });
+                if (processInstanceId != null && !processInstanceId.isEmpty()) {
+                    variables = runtimeService.getVariables(processInstanceId);
+
+                    SaleOrder saleOrder = (SaleOrder) variables.get("saleOrder");
+                    List<ProductionOrder> productionOrderList = (List<ProductionOrder>) variables.get("productionOrderList");
+
+                    res.add(new SaleOrderSplitApprovalDTO(taskId, saleOrder, productionOrderList));
+                }
+
+            });
+        };
 
         return res;
     }
