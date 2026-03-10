@@ -3,13 +3,18 @@ package com.ruoyi.mdm.controller;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.mdm.domain.dto.ProductionOrderQueryDTO;
+import com.ruoyi.mdm.domain.entity.SaleOrder;
+import com.ruoyi.mdm.service.ISaleOrderService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +47,9 @@ public class ProductionOrderController extends BaseController {
 
     @Autowired
     private IProductionOrderService productionOrderService;
+
+    @Autowired
+    private ISaleOrderService saleOrderService;
 
     private final Logger log = LoggerFactory.getLogger(ProductionOrderController.class);
 
@@ -114,9 +122,17 @@ public class ProductionOrderController extends BaseController {
     public AjaxResult addBatch(@RequestBody List<ProductionOrder> productionOrderList) {
 
         HashMap<String,Object> map = new HashMap<>();
+        if (CollectionUtils.isEmpty(productionOrderList)) {
+            throw new ServiceException("生产订单列表不能为空，请至少填写一条订单数据");
+        }
+        Long saleOrderId = productionOrderList.get(0).getSaleId();
+        SaleOrder saleOrder = saleOrderService.selectSaleOrderById(saleOrderId);
+
+        map.put("saleOrder",saleOrder);
         map.put("productionOrderList",productionOrderList);
+
         ProcessInstance processInstance =
-                        runtimeService.startProcessInstanceByKey("splitSalesOrder", map);
+                        runtimeService.startProcessInstanceByKey("splitSalesOrderWithAudit", map);
         String processInstanceId = processInstance.getId();
         log.info("{}\t流程实例ID:{}",processInstance.getProcessDefinitionName(),processInstanceId);
 //        Task task = taskService.createTaskQuery()

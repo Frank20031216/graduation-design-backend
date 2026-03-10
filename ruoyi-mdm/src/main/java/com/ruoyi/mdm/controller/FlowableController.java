@@ -2,15 +2,24 @@ package com.ruoyi.mdm.controller;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.mdm.domain.dto.SaleOrderSplitApprovalDTO;
+import com.ruoyi.mdm.domain.entity.ProductionOrder;
+import com.ruoyi.mdm.domain.entity.SaleOrder;
 import org.flowable.engine.RepositoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
 import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/mdm/flowable")
@@ -18,6 +27,12 @@ public class FlowableController extends BaseController {
 
     @Autowired
     private RepositoryService repositoryService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private RuntimeService runtimeService;
 
     @GetMapping("/queryAllDeployedProcesses")
     public List<JSONObject> queryAllDeployedProcesses() {
@@ -55,4 +70,39 @@ public class FlowableController extends BaseController {
         return jsonObjects;
     }
 
+    @GetMapping("/querySplitTasksToAudit")
+    public List<SaleOrderSplitApprovalDTO> querySplitTasksToAudit() {
+        List<Task> tasks = taskService.createTaskQuery()
+                .taskAssignee("admin")
+                .list();
+
+        List<SaleOrderSplitApprovalDTO> res = new ArrayList<>();
+        tasks.stream().forEach(task -> {
+            String taskId = task.getId();
+            String processInstanceId = task.getProcessInstanceId();
+            Map<String, Object> variables;
+
+            if (processInstanceId != null && !processInstanceId.isEmpty()) {
+                variables = runtimeService.getVariables(processInstanceId);
+
+                SaleOrder saleOrder = (SaleOrder) variables.get("saleOrder");
+                List<ProductionOrder> productionOrderList = (List<ProductionOrder>) variables.get("productionOrderList");
+
+                res.add(new SaleOrderSplitApprovalDTO(taskId, saleOrder, productionOrderList));
+            }
+
+        });
+
+        return res;
+    }
+
+
+    @PostMapping("/confirmSplit")
+    public void confirmSplit(String taskId, boolean auditResult) {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("auditResult", auditResult);
+        taskService.complete(taskId, map);
+    }
 }
