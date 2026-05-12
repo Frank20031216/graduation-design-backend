@@ -101,4 +101,17 @@ public class SaleOrderController extends BaseController
     {
         return toAjax(saleOrderService.deleteSaleOrderByIds(ids));
     }
+
+
+    /**
+     * 订单加急
+     */
+     @PreAuthorize("@ss.hasPermi('mdm:saleOrder:urgent')")
+    @Log(title = "销售订单", businessType = BusinessType.UPDATE)
+    @PutMapping("/urgent")
+    public AjaxResult urgent()
+    {
+        return null;
+    }
+
 }

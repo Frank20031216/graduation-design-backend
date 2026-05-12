@@ -70,6 +70,14 @@
             <version>6.8.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-mdm</artifactId>
+        </dependency>
 
     </dependencies>
 

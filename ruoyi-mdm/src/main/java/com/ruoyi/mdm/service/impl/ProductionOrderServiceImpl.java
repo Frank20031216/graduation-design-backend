@@ -9,7 +9,10 @@ import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.mdm.domain.dto.ProductionOrderQueryDTO;
+import com.ruoyi.mdm.event.ProductionOrderChangeEvent;
+import com.ruoyi.mdm.websocket.ProductionOrderWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import com.ruoyi.mdm.mapper.ProductionOrderMapper;
 import com.ruoyi.mdm.domain.entity.ProductionOrder;
@@ -24,8 +27,12 @@ import org.springframework.util.CollectionUtils;
  */
 @Service
 public class ProductionOrderServiceImpl implements IProductionOrderService {
+
     @Autowired
     private ProductionOrderMapper productionOrderMapper;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     /**
      * 查询生产订单管理
@@ -60,9 +67,12 @@ public class ProductionOrderServiceImpl implements IProductionOrderService {
      */
     @Override
     public int insertProductionOrder(ProductionOrder productionOrder) {
-        productionOrder.setCreateTime(DateUtils.getNowDate());
-        productionOrder.setCreateBy(SecurityUtils.getUsername());
-        return productionOrderMapper.insertProductionOrder(productionOrder);
+        //productionOrder.setCreateTime(DateUtils.getNowDate());
+        //productionOrder.setCreateBy(SecurityUtils.getUsername());
+        int res = productionOrderMapper.insertProductionOrder(productionOrder);
+        applicationContext.publishEvent(new ProductionOrderChangeEvent(productionOrder, "INSERT"));
+
+        return res;
     }
 
     /**

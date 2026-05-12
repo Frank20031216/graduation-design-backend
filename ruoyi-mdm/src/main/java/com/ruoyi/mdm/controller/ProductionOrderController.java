@@ -2,11 +2,15 @@ package com.ruoyi.mdm.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSON;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.mdm.domain.dto.ProductionOrderQueryDTO;
 import com.ruoyi.mdm.domain.entity.SaleOrder;
+import com.ruoyi.mdm.mq.RabbitMqConfig;
 import com.ruoyi.mdm.service.ISaleOrderService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
@@ -14,6 +18,8 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,6 +64,9 @@ public class ProductionOrderController extends BaseController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 查询生产订单管理列表
@@ -106,7 +115,7 @@ public class ProductionOrderController extends BaseController {
     /**
      * 新增生产订单管理
      */
-    @PreAuthorize("@ss.hasPermi('mdm:productionOrder:add')")
+    //@PreAuthorize("@ss.hasPermi('mdm:productionOrder:add')")
     @Log(title = "生产订单管理", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody ProductionOrder productionOrder) {
@@ -128,22 +137,26 @@ public class ProductionOrderController extends BaseController {
         Long saleOrderId = productionOrderList.get(0).getSaleId();
         SaleOrder saleOrder = saleOrderService.selectSaleOrderById(saleOrderId);
 
-        map.put("saleOrder",saleOrder);
-        map.put("productionOrderList",productionOrderList);
+        String messageId = UUID.randomUUID().toString();
+        CorrelationData correlationData = new CorrelationData(messageId);
 
-        ProcessInstance processInstance =
-                        runtimeService.startProcessInstanceByKey("splitSalesOrderWithAudit", map);
-        String processInstanceId = processInstance.getId();
-        log.info("{}\t流程实例ID:{}",processInstance.getProcessDefinitionName(),processInstanceId);
-//        Task task = taskService.createTaskQuery()
-//                .processInstanceId(processInstanceId)
-//                .active()
-//                .singleResult();
-//        taskService.complete(task.getId());
+        // 异步发送消息到流程驱动交换机
+        rabbitTemplate.convertAndSend(
+                RabbitMqConfig.PROCESS_EVENT_EXCHANGE,
+                RabbitMqConfig.OMS_ORDER_CREATE_ROUTING_KEY,
+                JSON.toJSONString(productionOrderList), // 消息体转为JSON字符串（支持序列化）
+                correlationData
+        );
 
-        return success(processInstanceId);
-        //return toAjax(productionOrderService.insertProductionOrders(productionOrderList));
+        log.info("OMS发送订单消息给Flowable：messageId={}", messageId);
+        return success();
+
     }
+
+
+
+
+
 
     /**
      * 修改生产订单管理

@@ -105,7 +105,6 @@ public class FlowableController extends BaseController {
 
         if(SecurityUtils.hasRole(staticAssignee)){
             List<Task> tasks = taskService.createTaskQuery()
-                    .taskAssignee("admin")
                     .processDefinitionKey(processDefinitionKey)
                     .taskDefinitionKey(taskDefinitionKey)
                     .orderByTaskCreateTime().desc()
